@@ -1,0 +1,52 @@
+{
+	"id": "d528c706-3c7e-edc1-0769-d276cb8258fd",
+	"name": "Hw1",
+	"description": "",
+	"order": [
+		"b362a65f-1e24-6caa-3f39-ddea345dd2b9",
+		"36a26f2c-950a-0faf-3ab3-80dd6ca9ef9c"
+	],
+	"folders": [],
+	"timestamp": 1486091360937,
+	"owner": "1530668",
+	"public": false,
+	"requests": [
+		{
+			"id": "36a26f2c-950a-0faf-3ab3-80dd6ca9ef9c",
+			"headers": "",
+			"url": "https://www.googleapis.com/books/v1/volumes/{{id}}",
+			"preRequestScript": null,
+			"pathVariables": {},
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"tests": "tests[\"Status code is 200\"] = responseCode.code === 200;\ntests[\"Tests for userid\"] = responseBody.has(\"id\");",
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1486159385857,
+			"name": "chain id",
+			"description": "",
+			"collectionId": "d528c706-3c7e-edc1-0769-d276cb8258fd",
+			"responses": []
+		},
+		{
+			"id": "b362a65f-1e24-6caa-3f39-ddea345dd2b9",
+			"headers": "",
+			"url": "\thttps://www.googleapis.com/books/v1/volumes?q={{book_title}}",
+			"preRequestScript": "postman.setEnvironmentVariable(\"book_title\", \"Turing\");",
+			"pathVariables": {},
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"version": 2,
+			"tests": "tests[\"Status code is 200\"] = responseCode.code === 200;\ntests[\"Tests for userid\"] = responseBody.has(\"id\");\n\nif(responseCode.code === 200 && responseBody.has(\"id\")){\n    try{\n        var jsonData = JSON.parse(responseBody);\n        \n        for(var i=0; i<jsonData[\"items\"].length; i++){\n    var cTitle = jsonData[\"items\"][i][\"volumeInfo\"][\"title\"];\n    if(cTitle == \"Turing\"){\n        postman.setEnvironmentVariable(\"id\", jsonData[\"items\"][i][\"id\"]);\n    }\n}\n    }\n    catch(e){\n        console.log(e);\n    }\n    \n    \n}\n\n//var jsonData = JSON.parse(responseBody);\n\n//for(var i=0; i<jsonData[\"items\"].length; i++){\n//    var cTitle = jsonData[\"items\"][i][\"volumeInfo\"][\"title\"];\n//    if(cTitle == \"Turing\"){\n//        postman.setEnvironmentVariable(\"id\", jsonData[\"items\"][i][\"id\"]);\n//    }\n//}\n//tests[\"Status code is 200\"] = responseCode.code === 200;\n//tests[\"Tests for userid\"] = responseBody.has(\"id\");\n",
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1486160595535,
+			"name": "book_title",
+			"description": "book title id parse\n",
+			"collectionId": "d528c706-3c7e-edc1-0769-d276cb8258fd",
+			"responses": []
+		}
+	]
+}
