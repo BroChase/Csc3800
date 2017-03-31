@@ -15,8 +15,12 @@ module.exports = {
 
 function save(req,res,next){
     var movie = new db({title: req.body.title, year: req.body.year, actor: req.body.actor});
-    movie.save();
-    res.json({description: "Movie added to the list!"});
+    movie.save(function(err){
+        if(err){res.status(204).send();}
+        else {
+            res.json({description: "Movie added to the list!"});
+        }
+    });
 }
 
 function getAll(req,res,next){
@@ -30,7 +34,7 @@ function getAll(req,res,next){
 function getOne(req, res, next){
     var id = String(req.swagger.params.id.value);
     db.find({title: id},function(err,response){
-        if(err){throw err;}
+        if(err){res.status(204).send();}
         else{
             res.send(response);
         }
@@ -39,8 +43,11 @@ function getOne(req, res, next){
 //delete A single movie from the db
 function delmov(req, res, next) {
     var id = String(req.swagger.params.id.value);
-    db.findOneAndRemove({title: id}, function(err){
-        if(err){throw err;}
+    db.findOneAndRemove({title: id}, function(err, response){
+        if(err){res.status(204).send();}
+        else if(response === null){
+            res.json({description: "No Movie with that title to delete"});
+        }
         else{
             res.json({description: "Movie Deleted"});
         }
