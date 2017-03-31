@@ -1,0 +1,165 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Movies DB with Mongodb
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths 
+basePath: /
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /GET:   #*WORKING
+    x-swagger-router-controller: movies
+    get:
+      operationId: getAll
+      description: get the movies list
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetMovieList"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /POST:  #*WORKING
+    x-swagger-router-controller: movies
+    post:
+      operationId: save
+      description: add a new movie to the list
+      parameters:
+        - name: title
+          description: Movie title
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Movie"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /GETONE/{id}: #working
+    x-swagger-router-controller: movies
+    get:
+      operationId: getOne
+      description: get a movie
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetMovieList"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /DEL/{id}:  #working
+    x-swagger-router-controller: movies
+    delete:
+      operationId: delmov
+      description: delete a movie
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+#todo if time imp update
+  /UPDATE/{id}:
+    x-swagger-router-controller: movies
+    put:
+      operationId: updatemov
+      description: update a movie
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: movie
+          in: body
+          schema:
+            $ref: "#/definitions/MovieUpdate"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# *SCHEMA*
+definitions:
+  MovieUpdate:      #update only the year of the movie
+    type: object
+    properties:
+      year:
+        type: number
+        description: year movie released
+  GetMovieList:           #*Get all movies
+    properties:
+      movies:
+        type: string
+      description:
+        type: string
+  ErrorResponse:          #*Error response
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  Movie:                  #*Insert movie
+    type: object
+    properties:
+      title:
+        type: string
+        description: task object title
+      year:
+        type: number
+        description: task object year relesed
+      actor:
+        type: array
+        description: list of actors
+        items:
+          type: string
+    required:
+      - title
+      - year
+      - actor
+  GeneralResponse:        #*General response
+    type: object
+    properties:
+      description:
+        type: string
+        description: a short comment
+    required:
+      - description
